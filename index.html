@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacts Directory</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .search-box {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Contacts Directory</h2>
+    
+    <script>
+        const contactsData = {
+            "Crete office": [
+                {"NAME": "CHARITIDIS DIMITRIOS", "VOIP": "4877, 4497", "DEPARTMENT": "MANAGEMENT", "POSITION": "CEO", "CONTACTS": "6936002301", "EMAIL": "d.charitidis@teztour.gr"},
+                {"NAME": "APLADENAKIS MANOLIS", "VOIP": "4801", "DEPARTMENT": "MANAGEMENT", "POSITION": "GENERAL MANAGER", "CONTACTS": "6936002307", "EMAIL": "manolis@teztour.gr"}
+            ],
+            "Service staff 2022": [
+                {"NAME": "Arman Eduard", "POSITION": "DRIVER", "DESTINATION": "CRETE", "EMAIL": "e.arman@tez-tour.gr", "TELEPHONE": "6940460797"},
+                {"NAME": "Maiakov Oleksandr", "POSITION": "DRIVER", "DESTINATION": "CRETE", "EMAIL": "o.maiakov@tez-tour.gr", "TELEPHONE": "6948109872"}
+            ]
+        };
+        
+        function createTable(sheetName, data) {
+            let container = $('<div>');
+            let searchBox = $('<input type="text" class="search-box" placeholder="Search...">');
+            let table = $('<table>');
+            let thead = $('<thead>');
+            let tbody = $('<tbody>');
+
+            if (data.length > 0) {
+                let headers = Object.keys(data[0]);
+                let headerRow = $('<tr>');
+                headers.forEach(header => {
+                    headerRow.append(`<th>${header}</th>`);
+                });
+                thead.append(headerRow);
+
+                data.forEach(item => {
+                    let row = $('<tr>');
+                    headers.forEach(header => {
+                        row.append(`<td>${item[header] || ''}</td>`);
+                    });
+                    tbody.append(row);
+                });
+            }
+            
+            table.append(thead).append(tbody);
+            container.append(`<h3>${sheetName}</h3>`).append(searchBox).append(table);
+            $('body').append(container);
+            
+            searchBox.on('keyup', function() {
+                let value = $(this).val().toLowerCase();
+                tbody.find('tr').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            });
+        }
+        
+        $(document).ready(function() {
+            for (let sheet in contactsData) {
+                createTable(sheet, contactsData[sheet]);
+            }
+        });
+    </script>
+</body>
+</html>
